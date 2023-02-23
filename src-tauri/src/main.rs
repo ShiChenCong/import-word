@@ -3,10 +3,18 @@
     windows_subsystem = "windows"
 )]
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
+use std::fs::File;
+
 #[tauri::command]
 fn greet(name: Vec<&str>) {
-    println!("Hello, {:?}! You've been greeted from Rust!", name)
+    let mut word_vec: Vec<String> = Vec::new();
+    let path = name[0];
+    let mut rdr = csv::Reader::from_reader(File::open(path).unwrap());
+    for result in rdr.records() {
+        let record = result.unwrap();
+        word_vec.push(record.get(1).unwrap().to_string());
+    }
+    println!("{:?}", word_vec);
 }
 
 fn main() {
