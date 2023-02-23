@@ -14,7 +14,6 @@ fn greet(name: Vec<&str>) {
         let record = result.unwrap();
         word_vec.push(record.get(1).unwrap().to_string());
     }
-    println!("{:?}", word_vec);
 }
 
 fn main() {
