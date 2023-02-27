@@ -7,9 +7,7 @@ function App() {
   const [selectedPath, setSelectedPath] = useState<null | string | string[]>()
 
   async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    // setGreetMsg(await invoke("greet", { name }));
-    await invoke("greet", { name: selectedPath })
+    await invoke("select_file", { name: selectedPath })
   }
 
   return (
