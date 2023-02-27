@@ -7,7 +7,8 @@ function App() {
   const [selectedPath, setSelectedPath] = useState<null | string | string[]>()
 
   async function greet() {
-    await invoke("select_file", { name: selectedPath })
+    const result = await invoke("select_file", { name: selectedPath })
+    console.log('result: ', result)
   }
 
   return (

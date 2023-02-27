@@ -6,7 +6,7 @@
 use std::fs::File;
 
 #[tauri::command]
-fn select_file(name: Vec<&str>) -> Result<String, String> {
+fn select_file(name: Vec<&str>) -> Result<Vec<String>, String> {
     let mut word_vec: Vec<String> = Vec::new();
     // 获取第几列
     let path = name[0];
@@ -20,10 +20,10 @@ fn select_file(name: Vec<&str>) -> Result<String, String> {
                             word_vec.push(word.to_string());
                         }
                     }
-                    Err(err) => {}
+                    Err(err) => return Err(err.to_string()),
                 }
             }
-            Ok(String::from("success"))
+            return Ok(word_vec);
         }
         Err(err) => Err(err.to_string()),
     }
