@@ -6,9 +6,18 @@ import "./App.css";
 function App() {
   const [selectedPath, setSelectedPath] = useState<null | string | string[]>()
 
+  window.AWSC.use("nvc", function(state, module) {
+    window.nvc = module.init({
+      appkey: "FFFF0N0N000000007037",
+      scene: "nvc_message_h5",
+    });
+  });
+
   async function greet() {
-    const result = await invoke("select_file", { name: selectedPath })
-    console.log('result: ', result)
+    // const result = await invoke("select_file", { name: selectedPath })
+    // console.log('result: ', result)
+    const a = window.nvc.getNVCVal()
+    console.log('a: ', a)
   }
 
   return (
