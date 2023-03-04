@@ -5,7 +5,9 @@ import "./App.css";
 
 function App() {
   const [selectedPath, setSelectedPath] = useState<null | string | string[]>()
+  const [words, setWords] = useState<string[]>()
 
+  // 不能放在body前面 会堵塞页面渲染
   window.AWSC.use("nvc", function(state, module) {
     window.nvc = module.init({
       appkey: "FFFF0N0N000000007037",
@@ -13,11 +15,17 @@ function App() {
     });
   });
 
-  async function greet() {
-    // const result = await invoke("select_file", { name: selectedPath })
-    // console.log('result: ', result)
-    const a = window.nvc.getNVCVal()
-    console.log('a: ', a)
+  function greet() {
+    // 先拿到所有的单词
+    invoke("select_file", { name: selectedPath }).then(res => {
+      if (res instanceof Array) {
+        setWords(res)
+      }
+    })
+  }
+
+  function upload() {
+    console.log('words: ', words)
   }
 
   return (
@@ -32,7 +40,10 @@ function App() {
         选择路径(支持多选)
       </div>
       <div onClick={greet}>
-        确认
+        确认单词
+      </div>
+      <div onClick={upload}>
+        开始上传
       </div>
     </div>
   );
