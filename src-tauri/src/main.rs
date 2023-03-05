@@ -3,9 +3,8 @@
     windows_subsystem = "windows"
 )]
 
-use actix_web::{get, middleware, rt, web, App, HttpRequest, HttpServer, Responder};
-use std::fs::File;
-use tokio;
+use actix_web::{get, web, App, HttpServer, Responder};
+use std::{fs::File, thread};
 
 #[tauri::command]
 fn select_file(name: Vec<&str>) -> Result<Vec<String>, String> {
@@ -36,9 +35,8 @@ async fn greet(name: web::Path<String>) -> impl Responder {
     format!("Hello {name}!")
 }
 
-#[tokio::main]
+#[actix_web::main]
 async fn start_server() -> std::io::Result<()> {
-    print!("开始启动代理服务");
     HttpServer::new(|| App::new().service(greet))
         .bind(("127.0.0.1", 8080))?
         .run()
@@ -46,7 +44,9 @@ async fn start_server() -> std::io::Result<()> {
 }
 
 fn main() {
-    start_server().unwrap();
+    thread::spawn(|| {
+        start_server().unwrap();
+    });
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![select_file])
         .run(tauri::generate_context!())
