@@ -25,7 +25,18 @@ function App() {
   }
 
   function upload() {
-    console.log('words: ', words)
+    const params = {
+      "business_id": 6, "words": words
+    }
+    fetch("https://apiv3.shanbay.com/bayuser/login", {
+      method: 'POST',
+      headers: {
+        "x-api-afs-nvc": window.nvc.getNVCVal()
+      },
+      body: JSON.stringify({ "account": "17369669007", "password": "karl463848340" })
+    }).then(res => res.json()).then(res => {
+      console.log('res: ', res)
+    })
   }
 
   return (

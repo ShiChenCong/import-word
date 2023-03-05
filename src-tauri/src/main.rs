@@ -3,6 +3,7 @@
     windows_subsystem = "windows"
 )]
 
+use actix_web::{get, web, App, HttpServer, Responder};
 use std::fs::File;
 
 #[tauri::command]
@@ -29,9 +30,20 @@ fn select_file(name: Vec<&str>) -> Result<Vec<String>, String> {
     }
 }
 
-fn main() {
+#[get("/hello/{name}")]
+async fn greet(name: web::Path<String>) -> impl Responder {
+    format!("Hello {name}!")
+}
+
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![select_file])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+
+    HttpServer::new(|| App::new().service(greet))
+        .bind(("127.0.0.1", 8080))?
+        .run()
+        .await
 }
