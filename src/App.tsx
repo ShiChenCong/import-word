@@ -34,9 +34,10 @@ function App() {
     fetch("http://127.0.0.1:8080", {
       method: 'post',
       headers: {
-        "x-api-afs-nvc": window.nvc.getNVCVal()
+        // "x-api-afs-nvc": window.nvc.getNVCVal()
+        "Content-type": "application/json",
       },
-      // body: JSON.stringify({ "account": "17369669007", "password": "karl463848340" })
+      body: JSON.stringify({ "id": 123, "name": "scc" })
     }).then(res => res.json()).then(res => {
       console.log('res: ', res)
     }).catch(err => {

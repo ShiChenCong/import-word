@@ -4,7 +4,7 @@
 )]
 
 use actix_cors::Cors;
-use actix_web::{post, web, App, Error, HttpResponse, HttpServer, Responder};
+use actix_web::{http, post, web, App, Error, HttpResponse, HttpServer, Responder};
 use serde::{Deserialize, Serialize};
 use std::fs::File;
 
@@ -52,7 +52,11 @@ fn main() {
         .setup(|_| {
             tauri::async_runtime::spawn({
                 HttpServer::new(|| {
-                    let cors = Cors::default().allow_any_origin().send_wildcard();
+                    let cors = Cors::default()
+                        .allow_any_origin()
+                        .send_wildcard()
+                        .allowed_methods(vec!["GET", "POST"])
+                        .allowed_header(http::header::CONTENT_TYPE);
                     App::new().wrap(cors).service(index)
                 })
                 .bind(("127.0.0.1", 8080))?
