@@ -25,18 +25,21 @@ function App() {
   }
 
   function upload() {
-    const params = {
-      "business_id": 6, "words": words
-    }
-    fetch("https://apiv3.shanbay.com/bayuser/login", {
-      method: 'POST',
-      headers: {
-        "x-api-afs-nvc": window.nvc.getNVCVal()
-      },
-      body: JSON.stringify({ "account": "17369669007", "password": "karl463848340" })
-    }).then(res => res.json()).then(res => {
-      console.log('res: ', res)
-    })
+    fetch("http://127.0.0.1:8080/a/scc")
+      .then((response) => response.json())
+      .then((data) => console.log(data));
+    // const params = {
+    //   "business_id": 6, "words": words
+    // }
+    // fetch("http://127.0.0.1:8080/a/scc", {
+    //   method: 'get',
+    //   headers: {
+    //     "x-api-afs-nvc": window.nvc.getNVCVal()
+    //   },
+    //   // body: JSON.stringify({ "account": "17369669007", "password": "karl463848340" })
+    // }).then(res => res.json()).then(res => {
+    //   console.log('res: ', res)
+    // })
   }
 
   return (

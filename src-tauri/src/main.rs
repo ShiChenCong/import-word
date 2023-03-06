@@ -3,7 +3,9 @@
     windows_subsystem = "windows"
 )]
 
-use actix_web::{get, web, App, HttpServer, Responder};
+use actix_cors::Cors;
+use actix_web::{get, post, web, App, Error, HttpResponse, HttpServer, Responder};
+use serde::Serialize;
 use std::fs::File;
 
 #[tauri::command]
@@ -30,18 +32,29 @@ fn select_file(name: Vec<&str>) -> Result<Vec<String>, String> {
     }
 }
 
-#[get("/hello/{name}")]
-async fn greet(name: web::Path<String>) -> impl Responder {
-    format!("Hello {name}!")
+#[derive(Serialize)]
+struct MyObj {
+    name: String,
+}
+
+#[get("/a/{name}")]
+async fn index(name: web::Path<String>) -> Result<actix_web::HttpResponse, Error> {
+    let obj = MyObj {
+        name: name.to_string(),
+    };
+    Ok(HttpResponse::Ok().json(obj))
 }
 
 fn main() {
     tauri::Builder::default()
         .setup(|_| {
             tauri::async_runtime::spawn({
-                HttpServer::new(|| App::new().service(greet))
-                    .bind(("127.0.0.1", 8080))?
-                    .run()
+                HttpServer::new(|| {
+                    let cors = Cors::default().allowed_origin("http://localhost:1420");
+                    App::new().wrap(cors).service(index)
+                })
+                .bind(("127.0.0.1", 8080))?
+                .run()
             });
             Ok(())
         })

@@ -21,6 +21,10 @@
         "all": true,
         "open": true,
         "save": true
+      },
+      "http": {
+        "all": true,
+        "request": true
       }
     },
     "bundle": {
