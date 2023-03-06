@@ -56,7 +56,7 @@ fn main() {
                         .allow_any_origin()
                         .send_wildcard()
                         .allowed_methods(vec!["GET", "POST"])
-                        .allowed_header(http::header::CONTENT_TYPE);
+                        .allow_any_header();
                     App::new().wrap(cors).service(index)
                 })
                 .bind(("127.0.0.1", 8080))?
