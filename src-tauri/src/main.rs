@@ -4,8 +4,8 @@
 )]
 
 use actix_cors::Cors;
-use actix_web::{get, post, web, App, Error, HttpResponse, HttpServer, Responder};
-use serde::Serialize;
+use actix_web::{post, web, App, Error, HttpResponse, HttpServer, Responder};
+use serde::{Deserialize, Serialize};
 use std::fs::File;
 
 #[tauri::command]
@@ -32,17 +32,19 @@ fn select_file(name: Vec<&str>) -> Result<Vec<String>, String> {
     }
 }
 
-#[derive(Serialize)]
-struct MyObj {
+#[derive(Debug, Deserialize, Serialize)]
+struct User {
+    id: i32,
     name: String,
 }
 
-#[get("/a/{name}")]
-async fn index(name: web::Path<String>) -> Result<actix_web::HttpResponse, Error> {
-    let obj = MyObj {
-        name: name.to_string(),
+#[post("/")]
+async fn index(body: web::Json<User>) -> Result<impl Responder, Error> {
+    let obj = User {
+        id: body.id,
+        name: body.name.to_string(),
     };
-    Ok(HttpResponse::Ok().json(obj))
+    Ok(web::Json(obj))
 }
 
 fn main() {
@@ -50,7 +52,7 @@ fn main() {
         .setup(|_| {
             tauri::async_runtime::spawn({
                 HttpServer::new(|| {
-                    let cors = Cors::default().allowed_origin("http://localhost:1420");
+                    let cors = Cors::default().allow_any_origin().send_wildcard();
                     App::new().wrap(cors).service(index)
                 })
                 .bind(("127.0.0.1", 8080))?
