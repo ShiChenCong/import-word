@@ -18,7 +18,7 @@ serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.2", features = ["dialog-all", "http-all", "shell-open"] }
 csv = "1.2"
 actix-web = "4"
-reqwest = "0.11.4"
+reqwest = { version = "0.11", features = ["blocking", "json"] }
 actix-cors = "0.6.4"
 
 [features]

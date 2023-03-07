@@ -5,8 +5,9 @@
 
 use actix_cors::Cors;
 use actix_web::{http, post, web, App, Error, HttpResponse, HttpServer, Responder};
+use reqwest::{self, blocking::Response};
 use serde::{Deserialize, Serialize};
-use std::fs::File;
+use std::{collections::HashMap, fs::File};
 
 #[tauri::command]
 fn select_file(name: Vec<&str>) -> Result<Vec<String>, String> {
@@ -33,18 +34,28 @@ fn select_file(name: Vec<&str>) -> Result<Vec<String>, String> {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-struct User {
-    id: i32,
-    name: String,
+struct Params {
+    nvc: String,
+}
+
+// 调用登陆接口看是否会有跨域问题
+async fn login(body: &Params) -> Result<reqwest::Response, Box<dyn std::error::Error>> {
+    let client = reqwest::Client::new();
+    let res = client
+        .post("https://apiv3.shanbay.com/bayuser/login")
+        .header("key", body.nvc.to_string())
+        .send()
+        .await?;
+    Ok(res)
 }
 
 #[post("/")]
-async fn index(body: web::Json<User>) -> Result<impl Responder, Error> {
-    let obj = User {
-        id: body.id,
-        name: body.name.to_string(),
+async fn index(body: web::Json<Params>) -> Result<HttpResponse, Error> {
+    let obj = Params {
+        nvc: body.nvc.to_string(),
     };
-    Ok(web::Json(obj))
+    let res = login(&obj).await.unwrap();
+    Ok(web::Json(res))
 }
 
 fn main() {
