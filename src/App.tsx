@@ -37,7 +37,8 @@ function App() {
         // "x-api-afs-nvc": window.nvc.getNVCVal()
         "Content-type": "application/json",
       },
-      body: JSON.stringify({ "id": 123, "name": "scc" })
+      // body: JSON.stringify({ "id": 123, "name": "scc" })
+      body: JSON.stringify({ nvc: window.nvc.getNVCVal() })
     }).then(res => res.json()).then(res => {
       console.log('res: ', res)
     }).catch(err => {

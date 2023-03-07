@@ -40,22 +40,27 @@ struct Params {
 
 // 调用登陆接口看是否会有跨域问题
 async fn login(body: &Params) -> Result<reqwest::Response, Box<dyn std::error::Error>> {
+    let mut map = HashMap::new();
+    map.insert("account", "17369669007");
+    map.insert("password", "karl463848340");
     let client = reqwest::Client::new();
     let res = client
-        .post("https://apiv3.shanbay.com/bayuser/login")
+        .post("http://127.0.0.1:4523/m1/2319116-0-default/test/post")
+        .json(&map)
         .header("key", body.nvc.to_string())
         .send()
-        .await?;
+        .await
+        .expect("fail reqwest");
     Ok(res)
 }
 
 #[post("/")]
-async fn index(body: web::Json<Params>) -> Result<HttpResponse, Error> {
+async fn index(body: web::Json<Params>) -> impl Responder {
     let obj = Params {
         nvc: body.nvc.to_string(),
     };
-    let res = login(&obj).await.unwrap();
-    Ok(web::Json(res))
+    let res = login(&obj).await;
+    HttpResponse::Ok().body(res.unwrap().text().await.unwrap())
 }
 
 fn main() {
