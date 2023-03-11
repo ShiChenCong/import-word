@@ -3,11 +3,7 @@
     windows_subsystem = "windows"
 )]
 
-use actix_cors::Cors;
-use actix_web::{http, post, web, App, Error, HttpResponse, HttpServer, Responder};
-use reqwest::{self, blocking::Response};
-use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, fs::File};
+use std::fs::File;
 
 #[tauri::command]
 fn select_file(name: Vec<&str>) -> Result<Vec<String>, String> {
@@ -33,53 +29,8 @@ fn select_file(name: Vec<&str>) -> Result<Vec<String>, String> {
     }
 }
 
-#[derive(Debug, Deserialize, Serialize)]
-struct Params {
-    nvc: String,
-}
-
-// 调用登陆接口看是否会有跨域问题
-async fn login(body: &Params) -> Result<reqwest::Response, Box<dyn std::error::Error>> {
-    let mut map = HashMap::new();
-    map.insert("account", "17369669007");
-    map.insert("password", "karl463848340");
-    let client = reqwest::Client::new();
-    let res = client
-        .post("http://127.0.0.1:4523/m1/2319116-0-default/test/post")
-        .json(&map)
-        .header("key", body.nvc.to_string())
-        .send()
-        .await
-        .expect("fail reqwest");
-    Ok(res)
-}
-
-#[post("/")]
-async fn index(body: web::Json<Params>) -> impl Responder {
-    let obj = Params {
-        nvc: body.nvc.to_string(),
-    };
-    let res = login(&obj).await;
-    HttpResponse::Ok().body(res.unwrap().text().await.unwrap())
-}
-
 fn main() {
     tauri::Builder::default()
-        .setup(|_| {
-            tauri::async_runtime::spawn({
-                HttpServer::new(|| {
-                    let cors = Cors::default()
-                        .allow_any_origin()
-                        .send_wildcard()
-                        .allowed_methods(vec!["GET", "POST"])
-                        .allow_any_header();
-                    App::new().wrap(cors).service(index)
-                })
-                .bind(("127.0.0.1", 8080))?
-                .run()
-            });
-            Ok(())
-        })
         .invoke_handler(tauri::generate_handler![select_file])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
