@@ -6,14 +6,7 @@ import "./App.css";
 function App() {
   const [selectedPath, setSelectedPath] = useState<null | string | string[]>()
   const [words, setWords] = useState<string[]>()
-
-  // 不能放在body前面 会堵塞页面渲染
-  window.AWSC.use("nvc", function(state, module) {
-    window.nvc = module.init({
-      appkey: "FFFF0N0N000000007037",
-      scene: "nvc_message_h5",
-    });
-  });
+  const [token, setToken] = useState<string>()
 
   function greet() {
     // 先拿到所有的单词
@@ -25,29 +18,21 @@ function App() {
   }
 
   function upload() {
-    // fetch("http://127.0.0.1:8080/a/scc")
-    //   .then((response) => response.json())
-    //   .then((data) => console.log(data));
-    const params = {
-      "business_id": 6, "words": words
+    if (!token) {
+      window.alert('请先输入token')
     }
-    fetch("http://127.0.0.1:8080", {
-      method: 'post',
-      headers: {
-        // "x-api-afs-nvc": window.nvc.getNVCVal()
-        "Content-type": "application/json",
-      },
-      // body: JSON.stringify({ "id": 123, "name": "scc" })
-      body: JSON.stringify({ nvc: window.nvc.getNVCVal() })
-    }).then(res => res.json()).then(res => {
-      console.log('res: ', res)
-    }).catch(err => {
-      console.log('err: ', err)
-    })
+    console.log(words, token)
   }
 
   return (
     <div className="container">
+      <div>
+        <span>输入登陆后的token</span>
+        <input onChange={(e) => {
+          console.log(e.target.value)
+          setToken(e.target.value)
+        }} />
+      </div>
       <div onClick={async (e) => {
         const selected = await open({
           directory: false,
