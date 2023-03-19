@@ -3,9 +3,8 @@
     windows_subsystem = "windows"
 )]
 
-use reqwest;
-use serde_json::json;
-use std::{collections::HashMap, fs::File};
+use reqwest::{self, header};
+use std::fs::File;
 
 #[tauri::command]
 fn select_file(name: Vec<&str>) -> Result<Vec<String>, String> {
@@ -26,15 +25,19 @@ fn select_file(name: Vec<&str>) -> Result<Vec<String>, String> {
     }
 }
 
-struct Param {
-    business_id: i32,
-    words: Vec<String>,
-}
+// struct Param {
+//     business_id: i32,
+//     words: Vec<String>,
+// }
 
 #[tauri::command]
 async fn upload_word() -> Result<(), String> {
-    let url = "https://apiv3.shanbay.com/wordscollection/words_bulk_upload";
     let client = reqwest::Client::new();
+
+    let url = "https://apiv3.shanbay.com/wordscollection/words_bulk_upload";
+    let mut headers = header::HeaderMap::new();
+    headers.insert(header::COOKIE, header::HeaderValue::from_static("_ga=GA1.2.1455716351.1676722123; sensorsdata2015jssdkcross=%7B%22distinct_id%22%3A%22yuhkav%22%2C%22first_id%22%3A%22186646d3053966-0289844b609a63-1f525634-3686400-186646d30541312%22%2C%22props%22%3A%7B%22%24latest_traffic_source_type%22%3A%22%E8%87%AA%E7%84%B6%E6%90%9C%E7%B4%A2%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC%22%2C%22%24latest_referrer%22%3A%22https%3A%2F%2Fwww.google.com%2F%22%7D%2C%22%24device_id%22%3A%22186646d3053966-0289844b609a63-1f525634-3686400-186646d30541312%22%7D; _gat=1; auth_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjE0Mzk5MDY4LCJleHAiOjE2ODAwODI3NTYsImV4cF92MiI6MTY4MDA4Mjc1NiwiZGV2aWNlIjoiIiwidXNlcm5hbWUiOiJXZWNoYXRfYjE4NDAxZTkzNTBmZTAwMyIsImlzX3N0YWZmIjowLCJzZXNzaW9uX2lkIjoiOTE4YmZlNWViZmJkMTFlZGJlMjIwYTdkOGMwYmUwMGYifQ.0DQJ-a1akkjKKg49ihzpAHZxVNZ-zH0wpLcT-lxU_aI; csrftoken=c3ff9fccf3a61eff53be5f744a51ae03"));
+
     let mut word_vec = Vec::new();
     word_vec.push("feast".to_string());
     let param = serde_json::json!({
@@ -48,7 +51,6 @@ async fn upload_word() -> Result<(), String> {
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![select_file, upload_word])
-        // .invoke_handler(tauri::generate_handler![upload_word])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

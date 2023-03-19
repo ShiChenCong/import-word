@@ -20,20 +20,11 @@ function App() {
   function upload() {
     if (!token) {
       window.alert('请先输入token')
-    } else {
-      document.cookie = token;
     }
-    const params = {
-      business_id: 6,
-      words: ['feast'],
-    }
-    fetch("https://apiv3.shanbay.com/wordscollection/words_bulk_upload", {
-      method: 'post',
-      credentials: 'include',
-      body: JSON.stringify(params)
+    invoke('upload_word').then(res => {
+      console.log(res)
     })
   }
-
   return (
     <div className="container">
       <div>
