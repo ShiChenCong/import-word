@@ -20,8 +20,18 @@ function App() {
   function upload() {
     if (!token) {
       window.alert('请先输入token')
+    } else {
+      document.cookie = token;
     }
-    console.log(words, token)
+    const params = {
+      business_id: 6,
+      words: ['feast'],
+    }
+    fetch("https://apiv3.shanbay.com/wordscollection/words_bulk_upload", {
+      method: 'post',
+      credentials: 'include',
+      body: JSON.stringify(params)
+    })
   }
 
   return (
