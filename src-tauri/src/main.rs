@@ -4,6 +4,7 @@
 )]
 
 use reqwest::{self, header};
+use serde::Deserialize;
 use std::fs::File;
 
 #[tauri::command]
@@ -30,6 +31,11 @@ fn select_file(name: Vec<&str>) -> Result<Vec<String>, String> {
 //     words: Vec<String>,
 // }
 
+#[derive(Deserialize, Debug)]
+pub struct ApiResponse {
+    pub task_id: String,
+}
+
 #[tauri::command]
 async fn upload_word() -> Result<(), String> {
     let client = reqwest::Client::new();
@@ -44,7 +50,23 @@ async fn upload_word() -> Result<(), String> {
         "business_id": 6,
         "words": word_vec,
     });
-    client.post(url).json(&param).send().await.unwrap();
+    let result_response = client.post(url).json(&param).send().await;
+    match result_response {
+        Ok(response) => {
+            let json_res = response.json::<ApiResponse>().await;
+            match json_res {
+                Ok(res) => {
+                    println!("{:?}", res);
+                }
+                Err(e) => {
+                    println!("{}", e.to_string());
+                }
+            }
+        }
+        Err(e) => {
+            println!("{}", e.to_string())
+        }
+    }
     Ok(())
 }
 
