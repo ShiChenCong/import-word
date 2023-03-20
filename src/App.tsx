@@ -49,6 +49,13 @@ function App() {
       <div onClick={upload}>
         开始上传
       </div>
+      <div onClick={() => {
+        invoke('my_custom_command').then(res => {
+          console.log(res)
+        }).catch(err => {
+          console.log('err is:', err)
+        })
+      }}>test</div>
     </div>
   );
 }

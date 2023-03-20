@@ -37,7 +37,7 @@ pub struct ApiResponse {
 }
 
 #[tauri::command]
-async fn upload_word() -> Result<(), String> {
+async fn upload_word() -> Result<String, String> {
     let client = reqwest::Client::new();
 
     let url = "https://apiv3.shanbay.com/wordscollection/words_bulk_upload";
@@ -57,22 +57,24 @@ async fn upload_word() -> Result<(), String> {
             match json_res {
                 Ok(res) => {
                     println!("{:?}", res);
+                    Ok(res.task_id)
                 }
-                Err(e) => {
-                    println!("{}", e.to_string());
-                }
+                Err(e) => Err(e.to_string()),
             }
         }
-        Err(e) => {
-            println!("{}", e.to_string())
-        }
+        Err(e) => Err(e.to_string()),
     }
-    Ok(())
+}
+
+#[tauri::command]
+fn my_custom_command() -> Result<String, String> {
+    Err("This failed".into())
 }
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![select_file, upload_word])
+        // .invoke_handler(tauri::generate_handler![select_file, upload_word])
+        .invoke_handler(tauri::generate_handler![my_custom_command])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
