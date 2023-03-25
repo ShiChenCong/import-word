@@ -21,10 +21,14 @@ function App() {
     if (!token) {
       window.alert('请先输入token')
     }
-    invoke('upload_word').then(res => {
+    invoke('upload_word', { token }).then(res => {
       console.log(res)
+      alert('success')
+    }).catch(err => {
+      console.log('err:', err);
     })
   }
+
   return (
     <div className="container">
       <div>

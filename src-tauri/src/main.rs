@@ -8,10 +8,10 @@
 mod util;
 use util::import_word;
 
-#[tauri::command]
-fn my_custom_command() -> Result<String, String> {
-    Err("This failed".into())
-}
+// #[tauri::command]
+// fn my_custom_command() -> Result<String, String> {
+//     Err("This failed".into())
+// }
 
 fn main() {
     tauri::Builder::default()
