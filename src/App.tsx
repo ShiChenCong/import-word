@@ -2,6 +2,7 @@ import { useState } from "react";
 import { open } from '@tauri-apps/api/dialog';
 import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
+import { sendNotification } from "@tauri-apps/api/notification"
 
 function App() {
   const [filePath, setFilePath] = useState<null | string | string[]>()
@@ -11,18 +12,20 @@ function App() {
   const [token, setToken] = useState<string>()
 
   function upload() {
-    if (!token) {
-      window.alert('请先输入token')
-    }
-    if (!columnIndex) {
-      window.alert('请先选择上传的是第几列')
-    }
-    invoke('upload_word', { token, filePath, uploadIndex: columnIndex }).then(res => {
-      console.log(res)
-      alert('success')
-    }).catch(err => {
-      console.log('err:', err);
-    })
+    // window.alert(123)
+    sendNotification({ title: 'TAURI', body: 'Tauri is awesome!', icon: 'icon' });
+    // if (!token) {
+    //   window.alert('请先输入token')
+    // }
+    // if (!columnIndex) {
+    //   window.alert('请先选择上传的是第几列')
+    // }
+    // invoke('upload_word', { token, filePath, uploadIndex: columnIndex }).then(res => {
+    //   console.log(res)
+    //   alert('success')
+    // }).catch(err => {
+    //   console.log('err:', err);
+    // })
   }
 
   return (

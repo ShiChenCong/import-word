@@ -1,6 +1,5 @@
 use reqwest::{self, header};
 use std::fs::File;
-use tokio::join;
 
 use serde::Deserialize;
 
@@ -42,30 +41,30 @@ pub async fn upload_word(
                 header::HeaderValue::from_str(token).unwrap(),
             );
 
-            let mut future_vec = Vec::new();
+            // let mut future_vec = Vec::new();
             // word_vec.push("feast".to_string());
             let len = words.len();
-            if len < 100 {
-                let param = serde_json::json!({
-                    "business_id": 6,
-                    "words": words,
-                });
-                let result_response = client.post(url).headers(headers).json(&param).send().await;
-            } else {
-                for chunk in words.chunks(100) {
-                    let param = serde_json::json!({
-                        "business_id": 6,
-                        "words": chunk,
-                    });
-                    let result_response =
-                        client.post(url).headers(headers).json(&param).send().await;
-                }
-            }
-            // let param = serde_json::json!({
-            //     "business_id": 6,
-            //     "words": words,
-            // });
-            // let result_response = client.post(url).headers(headers).json(&param).send().await;
+            // if len < 100 {
+            //     let param = serde_json::json!({
+            //         "business_id": 6,
+            //         "words": words,
+            //     });
+            //     let result_response = client.post(url).headers(headers).json(&param).send().await;
+            // } else {
+            //     for chunk in words.chunks(100) {
+            //         let param = serde_json::json!({
+            //             "business_id": 6,
+            //             "words": chunk,
+            //         });
+            //         let result_response =
+            //             client.post(url).headers(headers).json(&param).send().await;
+            //     }
+            // }
+            let param = serde_json::json!({
+                "business_id": 6,
+                "words": words,
+            });
+            let result_response = client.post(url).headers(headers).json(&param).send().await;
             match result_response {
                 Ok(response) => {
                     let json_res = response.json::<ApiResponse>().await;
