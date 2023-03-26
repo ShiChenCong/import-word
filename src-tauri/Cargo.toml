@@ -19,6 +19,7 @@ tauri = { version = "1.2", features = ["dialog-all", "http-all", "notification-a
 csv = "1.2"
 reqwest = {verson = "0.11", features= ["json"] }
 tokio = { version = "1.26.0", features = ["full"] }
+futures = "0.3.27"
 
 [features]
 # by default Tauri runs in production mode

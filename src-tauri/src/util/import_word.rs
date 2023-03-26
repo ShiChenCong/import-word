@@ -1,5 +1,8 @@
+use futures::future::join_all;
+// use futures::future::join_all;
 use reqwest::{self, header};
 use std::fs::File;
+use tokio::{join, spawn};
 
 use serde::Deserialize;
 
@@ -60,24 +63,29 @@ pub async fn upload_word(
             //             client.post(url).headers(headers).json(&param).send().await;
             //     }
             // }
+            let mut future_vec = Vec::new();
             let param = serde_json::json!({
                 "business_id": 6,
                 "words": words,
             });
-            let result_response = client.post(url).headers(headers).json(&param).send().await;
-            match result_response {
-                Ok(response) => {
-                    let json_res = response.json::<ApiResponse>().await;
-                    match json_res {
-                        Ok(res) => {
-                            println!("{:?}", res);
-                            Ok(res.task_id)
-                        }
-                        Err(e) => Err(e.to_string()),
-                    }
-                }
-                Err(e) => Err(e.to_string()),
-            }
+            let result_response = client.post(url).headers(headers).json(&param).send();
+            future_vec.push(spawn(result_response));
+
+            join_all(future_vec).await;
+            Ok(String::from("success"))
+            // match res {
+            //     Ok(response) => {
+            //         let json_res = response.json::<ApiResponse>().await;
+            //         match json_res {
+            //             Ok(res) => {
+            //                 println!("{:?}", res);
+            //                 Ok(res.task_id)
+            //             }
+            //             Err(e) => Err(e.to_string()),
+            //         }
+            //     }
+            //     Err(e) => Err(e.to_string()),
+            // }
         }
         Err(err) => Err(err.to_string()),
     }
