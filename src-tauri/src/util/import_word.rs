@@ -41,7 +41,6 @@ pub async fn upload_word(token: &str) -> Result<String, String> {
         header::COOKIE,
         header::HeaderValue::from_str(token).unwrap(),
     );
-    // headers.insert(header::COOKIE, header::HeaderValue::from_static("_ga=GA1.2.1455716351.1676722123; sensorsdata2015jssdkcross=%7B%22distinct_id%22%3A%22yuhkav%22%2C%22first_id%22%3A%22186646d3053966-0289844b609a63-1f525634-3686400-186646d30541312%22%2C%22props%22%3A%7B%22%24latest_traffic_source_type%22%3A%22%E8%87%AA%E7%84%B6%E6%90%9C%E7%B4%A2%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC%22%2C%22%24latest_referrer%22%3A%22https%3A%2F%2Fwww.google.com%2F%22%7D%2C%22%24device_id%22%3A%22186646d3053966-0289844b609a63-1f525634-3686400-186646d30541312%22%7D; _gat=1; auth_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjE0Mzk5MDY4LCJleHAiOjE2ODA1ODM5OTksImV4cF92MiI6MTY4MDU4Mzk5OSwiZGV2aWNlIjoiIiwidXNlcm5hbWUiOiJXZWNoYXRfYjE4NDAxZTkzNTBmZTAwMyIsImlzX3N0YWZmIjowLCJzZXNzaW9uX2lkIjoiOTE4YmZlNWViZmJkMTFlZGJlMjIwYTdkOGMwYmUwMGYifQ.4-zE-EtGiu4hDi3WUqKEOZBhkFtNu--GpD9DGk7kj8E; csrftoken=620aa48c4a15ed98eaafb93fc545d0f8"));
 
     let mut word_vec = Vec::new();
     word_vec.push("feast".to_string());
