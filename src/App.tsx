@@ -5,21 +5,10 @@ import "./App.css";
 
 function App() {
   const [filePath, setFilePath] = useState<null | string | string[]>()
-  // 上传的单词
-  const [words, setWords] = useState<string[]>()
   // 第几列 
   const [columnIndex, setColumnIndex] = useState(0)
   // 上传接口需要用到的token
   const [token, setToken] = useState<string>()
-
-  function greet() {
-    // 先拿到所有的单词
-    invoke("select_file", { name: filePath, key: 1 }).then(res => {
-      if (res instanceof Array) {
-        setWords(res)
-      }
-    })
-  }
 
   function upload() {
     if (!token) {
@@ -28,7 +17,7 @@ function App() {
     if (!columnIndex) {
       window.alert('请先选择上传的是第几列')
     }
-    invoke('upload_word', { token }).then(res => {
+    invoke('upload_word', { token, filePath, uploadIndex: columnIndex }).then(res => {
       console.log(res)
       alert('success')
     }).catch(err => {
@@ -58,12 +47,13 @@ function App() {
       </div>
 
       <div>
+        <div>输入上传列</div>
         <input onChange={(e) => {
           setColumnIndex(Number(e.target.value))
         }} />
-        <div onClick={greet}>
+        {/* <div onClick={greet}>
           确认上传列
-        </div>
+        </div> */}
       </div>
 
       <div onClick={upload}>
