@@ -1,8 +1,6 @@
 use futures::future::join_all;
-// use futures::future::join_all;
 use reqwest::{self, header};
 use std::fs::File;
-use tokio::{join, spawn};
 
 use serde::Deserialize;
 
@@ -53,7 +51,7 @@ pub async fn upload_word(
                 });
                 let result = client
                     .post(url)
-                    .headers(headers.to_owned())
+                    .headers(headers.clone())
                     .json(&param)
                     .send();
                 future_vec.push(result);
@@ -65,7 +63,7 @@ pub async fn upload_word(
                     });
                     let result = client
                         .post(url)
-                        .headers(headers.to_owned())
+                        .headers(headers.clone())
                         .json(&param)
                         .send();
                     future_vec.push(result);
