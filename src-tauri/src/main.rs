@@ -24,7 +24,7 @@ fn main() {
         .system_tray(system_tray)
         .on_system_tray_event(|app, event| match event {
             SystemTrayEvent::MenuItemClick { id, .. } => {
-                let item_handle = app.tray_handle().get_item(&id);
+                let _item_handle = app.tray_handle().get_item(&id);
                 match id.as_str() {
                     "hide" => {
                         let window = app.get_window("main").unwrap();
