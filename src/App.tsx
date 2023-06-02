@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { open } from '@tauri-apps/api/dialog';
-import { invoke } from "@tauri-apps/api/tauri";
+import { convertFileSrc, invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
 import { sendNotification } from "@tauri-apps/api/notification"
 
@@ -20,12 +20,12 @@ function App() {
     // if (!columnIndex) {
     //   window.alert('请先选择上传的是第几列')
     // }
-    // invoke('upload_word', { token, filePath, uploadIndex: columnIndex }).then(res => {
-    //   console.log(res)
-    //   alert('success')
-    // }).catch(err => {
-    //   console.log('err:', err);
-    // })
+    invoke('upload_word', { token, filePath, uploadIndex: columnIndex }).then(res => {
+      console.log(res)
+      alert('success')
+    }).catch(err => {
+      console.log('err:', err);
+    })
   }
 
   return (
@@ -39,11 +39,13 @@ function App() {
 
       <div>
         <div onClick={async (e) => {
-          const selected = await open({
+          const files = await open({
             directory: false,
             multiple: true,
+            // 加上标题速度能快不少
+            title: '选择文件'
           });
-          selected && setFilePath(selected)
+          files && setFilePath(files)
         }} >
           选择上传的文件: {filePath ? filePath[0] : '-'}
         </div>
